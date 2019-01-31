@@ -1,0 +1,21 @@
+digraph eddystone {
+
+  private_key;
+  public_key;
+
+  shared_secret;
+  salt;
+  prk;
+
+  beacon_private_key;
+  beacon_public_key;
+
+  identity_key;
+
+  temporary_key_data;
+  temporary_key;
+
+  ephemeral_id_data;
+  ephemeral_id;
+
+}
