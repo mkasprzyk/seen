@@ -16,15 +16,13 @@ fn main() {
             Err(_) => panic!("Wrong time settings"),
         }
 
-        println!("{}", now);
-
         let ephemeral_id = EphemeralID::new(
             "7C91330E61DFEA4606B5B3ECB4457D76".to_string(),
             5,  // 32s
             now // timestamp
         );
 
-        println!("EID: {}", ephemeral_id.value);
+        println!("[{}] EID: {}", now, ephemeral_id.value);
 
         sleep(Duration::new(1, 0));
     }
