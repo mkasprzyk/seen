@@ -2,7 +2,7 @@ import binascii
 import unittest
 import logging
 
-from ephemeral_id import *
+from ephemeral_id_python import *
 
 
 logging.basicConfig(level=logging.DEBUG)

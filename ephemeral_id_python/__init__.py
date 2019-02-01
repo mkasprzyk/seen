@@ -26,7 +26,10 @@ def compute_identity_key(shared_secret, service_public_key, beacon_public_key):
     logger.debug('beacon_public_key: {}'.format(binascii.hexlify(beacon_public_key)))
 
     salt = service_public_key + beacon_public_key
+    logger.debug('salt: {}'.format(binascii.hexlify(salt)))
+
     prk = hkdf.hkdf_extract(salt, shared_secret, hash=hashlib.sha256)
+    logger.debug('prk: {}'.format(binascii.hexlify(prk)))
 
     identity_key = hkdf.hkdf_expand(prk, b"", 32, hash=hashlib.sha256)[:16]
     logger.debug('identity_key: {}'.format(binascii.hexlify(identity_key)))
@@ -40,6 +43,8 @@ def compute_temporary_key(identity_key, counter):
       "\x00" * 2 +
       chr((counter // (2 ** 24)) % 256) +
       chr((counter // (2 ** 16)) % 256))
+
+    logger.debug('temporary_key_data: {}'.format(binascii.hexlify(temporary_key_data)))  
 
     temporary_key = AES.new(identity_key, AES.MODE_ECB).encrypt(temporary_key_data)
     logger.debug('temporary_key: {}'.format(binascii.hexlify(temporary_key)))
