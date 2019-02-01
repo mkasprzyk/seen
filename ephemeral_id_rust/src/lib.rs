@@ -29,11 +29,11 @@ pub struct TemporaryKey {
 
 #[derive(Debug)]
 pub struct EphemeralID {
-    rotation_exponent: i32,
-    beacon_time_seconds: i32,
+    rotation_exponent: u64,
+    beacon_time_seconds: u64,
     temporary_key: String,
     data: String,
-    value: String
+    pub value: String
 }
 
 
@@ -74,12 +74,12 @@ impl IdentityKey {
 }
 
 impl TemporaryKey {
-    pub fn new(identity_key: String, counter: i32) -> Self {
+    pub fn new(identity_key: String, counter: u64) -> Self {
 
         let mut temporary_key_data = [0; 16];
         temporary_key_data[11] = u8::from_str_radix("FF", 16).unwrap();
-        temporary_key_data[14] = ((counter / i32::pow(2, 24)) % 256) as u8;
-        temporary_key_data[15] = ((counter / i32::pow(2, 16)) % 256) as u8;
+        temporary_key_data[14] = ((counter / u64::pow(2, 24)) % 256) as u8;
+        temporary_key_data[15] = ((counter / u64::pow(2, 16)) % 256) as u8;
 
         let mut aes_ecb = aes::ecb_encryptor(aes::KeySize::KeySize128, &hex::decode(&identity_key).unwrap(), blockmodes::NoPadding);
 
@@ -99,17 +99,17 @@ impl TemporaryKey {
 
 
 impl EphemeralID {
-    pub fn new(identity_key: String, scaler: u32, counter: i32) -> Self {
+    pub fn new(identity_key: String, scaler: u32, counter: u64) -> Self {
 
-        let rotation_exponent = i32::pow(2, scaler);
+        let rotation_exponent = u64::pow(2, scaler);
         let beacon_time_seconds = (counter / rotation_exponent) * rotation_exponent;
 
         let mut ephemeral_id_data = [0; 16];
         ephemeral_id_data[11] = scaler as u8;
-        ephemeral_id_data[12] = ((beacon_time_seconds / i32::pow(2, 24)) % 256) as u8;
-        ephemeral_id_data[13] = ((beacon_time_seconds / i32::pow(2, 16)) % 256) as u8;
-        ephemeral_id_data[14] = ((beacon_time_seconds / i32::pow(2, 8)) % 256) as u8;
-        ephemeral_id_data[15] = ((beacon_time_seconds / i32::pow(2, 0)) % 256) as u8;
+        ephemeral_id_data[12] = ((beacon_time_seconds / u64::pow(2, 24)) % 256) as u8;
+        ephemeral_id_data[13] = ((beacon_time_seconds / u64::pow(2, 16)) % 256) as u8;
+        ephemeral_id_data[14] = ((beacon_time_seconds / u64::pow(2, 8)) % 256) as u8;
+        ephemeral_id_data[15] = ((beacon_time_seconds / u64::pow(2, 0)) % 256) as u8;
 
         let temporary_key = TemporaryKey::new(identity_key, counter);
 
